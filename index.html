@@ -150,7 +150,7 @@
             const reader = new FileReader();
             reader.onload = (e) => {
               const content = e.target.result;
-              this.processCSV(content);
+              this.processCSV(content, file.name);
             };
             reader.readAsBinaryString(file);
           },

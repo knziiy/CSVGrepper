@@ -7,7 +7,7 @@
     <style>
       .sticky-top {
         background-color: white;
-        z-index: 100;
+        z-index: 10 !important;
       }
     </style>
     <script
@@ -52,6 +52,31 @@
             Clear LocalStorage
           </button>
         </div>
+        <!-- Add this dropdown to select datasets -->
+        <div class="col-auto">
+          <div class="dropdown">
+            <button
+              class="btn btn-secondary dropdown-toggle"
+              type="button"
+              id="dataset-dropdown"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Select Dataset
+            </button>
+            <ul
+              class="dropdown-menu"
+              aria-labelledby="dataset-dropdown"
+              style="z-index: 100"
+            >
+              <li v-for="(dataset, index) in datasets" :key="index">
+                <a class="dropdown-item" href="#" @click="selectDataset(index)">
+                  {{ dataset.name }}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
       <div class="row">
         <div class="col">
@@ -87,6 +112,16 @@
             headers: [],
             rows: [],
             searchText: "",
+
+            // Add this data property for datasets
+            datasets: [
+              {
+                name: "None",
+                headers: [],
+                rows: [],
+              },
+            ],
+            selectedDatasetIndex: 0, // default selected dataset
           };
         },
         computed: {
@@ -94,13 +129,15 @@
             if (!this.searchText) {
               return this.rows;
             }
-
             const searchWords = this.searchText.toLowerCase().split(/\s+/);
             return this.rows.filter((row) => {
               return searchWords.every((word) =>
                 row.some((cell) => cell.toLowerCase().includes(word))
               );
             });
+          },
+          selectedDataset() {
+            return this.datasets[this.selectedDatasetIndex];
           },
         },
         methods: {
@@ -117,7 +154,7 @@
             };
             reader.readAsBinaryString(file);
           },
-          processCSV(content) {
+          processCSV(content, datasetName) {
             const encodingType = Encoding.detect(content);
             const content_utf = Encoding.convert(content, {
               from: encodingType,
@@ -129,8 +166,23 @@
 
             this.headers = rows.shift();
             this.rows = rows;
-            localStorage.setItem("headers", JSON.stringify(this.headers));
-            localStorage.setItem("rows", JSON.stringify(this.rows));
+
+            // Save the dataset to LocalStorage
+            if (!datasetName) {
+              const inputDatasetName = prompt(
+                "Enter a name for the dataset",
+                "Dataset"
+              );
+              datasetName = inputDatasetName;
+            }
+            if (datasetName) {
+              this.datasets.push({
+                name: datasetName,
+                headers: this.headers,
+                rows: this.rows,
+              });
+              localStorage.setItem("datasets", JSON.stringify(this.datasets));
+            }
           },
           parseCSVRows(text) {
             const lines = text.trim().split(/\r?\n/);
@@ -180,19 +232,22 @@
             return rows;
           },
           clearLocalStorage() {
-            localStorage.removeItem("headers");
-            localStorage.removeItem("rows");
-            this.headers = [];
-            this.rows = [];
+            localStorage.removeItem("datasets");
+            this.datasets = [
+              {
+                name: "Default",
+                headers: [],
+                rows: [],
+              },
+            ];
+            this.selectedDatasetIndex = 0;
           },
           async loadInitialData() {
             // Load data from LocalStorage
-            const headers = localStorage.getItem("headers");
-            const rows = localStorage.getItem("rows");
+            const datasets = localStorage.getItem("datasets");
 
-            if (headers && rows) {
-              this.headers = JSON.parse(headers);
-              this.rows = JSON.parse(rows);
+            if (datasets) {
+              this.datasets = JSON.parse(datasets);
               return;
             }
 
@@ -204,21 +259,25 @@
               }
 
               const content = await response.text();
-              this.processCSV(content);
+              this.processCSV(content, "Sample Data");
             } catch (error) {
               console.error("Failed to load initial data:", error);
             }
+          },
+          // Add this method to select a dataset
+          selectDataset(index) {
+            this.selectedDatasetIndex = index;
+            this.headers = this.selectedDataset.headers;
+            this.rows = this.selectedDataset.rows;
           },
         },
         created() {
           this.loadInitialData();
         },
-        mounted() {
-          // Add this line
-          this.loadInitialData();
-        },
+        // mounted() {
+        //   this.loadInitialData();
+        // },
       });
-
       app.mount("#app");
     </script>
 

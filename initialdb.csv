@@ -1,0 +1,51 @@
+ID,Product,Price,Quantity,Category
+1,These are sample data,25.99,10,Clothing
+2,Shoes,69.99,5,Footwear
+3,Backpack,35.50,20,Accessories
+4,Phone Case,12.99,50,Accessories
+5,Headphones,89.95,8,Electronics
+6,Chair,149.99,2,Furniture
+7,Book,9.99,100,Books
+8,Pen,1.50,200,Stationery
+9,Glasses,49.95,15,Eyewear
+10,Watch,299.00,3,Watches
+11,Monitor,299.99,1,Electronics
+12,Tablet,399.00,7,Electronics
+13,Keyboard,79.99,6,Electronics
+14,Speaker,199.00,4,Electronics
+15,Jacket,79.95,10,Clothing
+16,Jeans,59.99,15,Clothing
+17,Skirt,29.99,12,Clothing
+18,Blouse,34.50,18,Clothing
+19,Sunglasses,99.95,5,Eyewear
+20,Backpack,49.99,8,Accessories
+21,Notebook,3.99,300,Stationery
+22,Highlighter,1.00,500,Stationery
+23,Scissors,2.50,50,Stationery
+24,Mug,8.95,25,Kitchenware
+25,Knife,14.99,10,Kitchenware
+26,Bed,699.00,1,Furniture
+27,Sofa,799.00,1,Furniture
+28,Table,399.00,2,Furniture
+29,Desk Lamp,24.99,8,Lights
+30,Flashlight,19.99,10,Lights
+31,Water Bottle,12.50,20,Accessories
+32,Backpack,69.99,3,Accessories
+33,Power Bank,49.95,5,Electronics
+34,Smartwatch,199.00,4,Watches
+35,Blender,99.00,3,Kitchenware
+36,Toaster,59.99,4,Kitchenware
+37,Clock,39.99,5,Home Decor
+38,Candle,9.99,30,Home Decor
+39,Plant,29.99,10,Home Decor
+40,Curtains,49.99,2,Home Decor
+41,Earbuds,129.00,3,Electronics
+42,Mouse,29.99,7,Electronics
+43,Laptop,1199.00,1,Electronics
+44,Printer,99.99,1,Electronics
+45,Smartphone,699.00,1,Electronics
+46,Headset,149.00,2,Electronics
+47,Skateboard,89.99,5,Sports Equipment
+48,Soccer Ball,19.99,8,Sports Equipment
+49,Tennis Racket,79.99,3,Sports Equipment
+50,Golf Club,149.99,1,Sports Equipment

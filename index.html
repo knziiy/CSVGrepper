@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Local Storage Table</title>
+    <style>
+      .sticky-top {
+        background-color: white;
+        z-index: 100;
+      }
+    </style>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/encoding-japanese/1.0.30/encoding.min.js"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
+    <link rel="icon" type="image/x-icon" sizes="16x16 32x32" href="favicon.ico">
+  </head>
+  <body>
+    <div id="app" class="container">
+      <h4 class="pt-2">Local Storage Table</h4>
+      <div class="row">
+        <div class="col">
+          <input
+            type="file"
+            id="csv-file"
+            @change="loadCSV"
+            class="form-control"
+          />
+        </div>
+        <div class="col">
+          <input
+            type="text"
+            v-model="searchText"
+            placeholder="Refined search..."
+            class="form-control"
+          />
+        </div>
+        <div class="col">
+          <button @click="clearLocalStorage" class="btn btn-danger">
+            Clear LocalStorage
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <table class="table table-striped table-hover table-sm caption-top mt-3">
+            <caption>List of data loaded from a CSV file</caption>
+            <thead class="sticky-top">
+              <tr class="table-dark">
+                <th v-for="(header, index) in headers" :key="index">
+                  {{ header }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row, rowIndex) in filteredRows" :key="rowIndex">
+                <td v-for="(cell, cellIndex) in row" :key="cellIndex">
+                  {{ cell }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script>
+      const app = Vue.createApp({
+        data() {
+          return {
+            headers: [],
+            rows: [],
+            searchText: "",
+          };
+        },
+        computed: {
+          filteredRows() {
+            if (!this.searchText) {
+              return this.rows;
+            }
+
+            const searchTextLower = this.searchText.toLowerCase();
+            return this.rows.filter((row) =>
+              row.some((cell) => cell.toLowerCase().includes(searchTextLower))
+            );
+          },
+        },
+        methods: {
+          async loadCSV(event) {
+            const file = event.target.files[0];
+            if (!file) {
+              return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              const content = e.target.result;
+              this.processCSV(content);
+            };
+            reader.readAsBinaryString(file);
+          },
+          processCSV(content) {
+            const encodingType = Encoding.detect(content);
+            const content_utf = Encoding.convert(content, {
+              from: encodingType,
+              to: "UNICODE",
+              type: "string",
+            });
+
+            const rows = this.parseCSVRows(content_utf);
+
+            this.headers = rows.shift();
+            this.rows = rows;
+            localStorage.setItem("headers", JSON.stringify(this.headers));
+            localStorage.setItem("rows", JSON.stringify(this.rows));
+          },
+          parseCSVRows(text) {
+            const lines = text.trim().split(/\r?\n/);
+            const rows = [];
+
+            let currentRow = [];
+            let currentValue = "";
+            let inQuotes = false;
+
+            for (const line of lines) {
+              for (let i = 0; i < line.length; i++) {
+                const currentChar = line[i];
+
+                if (inQuotes) {
+                  if (currentChar === '"') {
+                    if (line[i + 1] === '"') {
+                      currentValue += '"';
+                      i++;
+                    } else {
+                      inQuotes = false;
+                    }
+                  } else {
+                    currentValue += currentChar;
+                  }
+                } else {
+                  if (currentChar === '"') {
+                    inQuotes = true;
+                  } else if (currentChar === ",") {
+                    currentRow.push(currentValue);
+                    currentValue = "";
+                  } else {
+                    currentValue += currentChar;
+                  }
+                }
+              }
+
+              if (inQuotes) {
+                currentValue += "\n";
+              } else {
+                currentRow.push(currentValue);
+                rows.push(currentRow);
+                currentRow = [];
+                currentValue = "";
+              }
+            }
+
+            return rows;
+          },
+          clearLocalStorage() {
+            localStorage.removeItem("headers");
+            localStorage.removeItem("rows");
+            this.headers = [];
+            this.rows = [];
+          },
+          async loadInitialData() {
+            // Load data from LocalStorage
+            const headers = localStorage.getItem("headers");
+            const rows = localStorage.getItem("rows");
+
+            if (headers && rows) {
+              this.headers = JSON.parse(headers);
+              this.rows = JSON.parse(rows);
+              return;
+            }
+
+            // Fetch initial data if not in LocalStorage
+            try {
+              const response = await fetch("initialdb.csv");
+              if (!response.ok) {
+                throw new Error(`HTTP error: ${response.status}`);
+              }
+
+              const content = await response.text();
+              this.processCSV(content);
+            } catch (error) {
+              console.error("Failed to load initial data:", error);
+            }
+          },
+        },
+        created() {
+          this.loadInitialData();
+        },
+        mounted() {
+          // Add this line
+          this.loadInitialData();
+        },
+      });
+
+      app.mount("#app");
+    </script>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

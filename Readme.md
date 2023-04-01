@@ -16,17 +16,19 @@ Please Drag & Drop the CSV file onto the screen.
 
 You can specify multiple keywords for searching, separated by spaces.
 
-## Screen Image
-
 <div align="center">
   <img src="static/local-storage-table-image.png">
 </div>
 
 ## Install
 
+You can obtain the pre-built .app file from the [Release page](https://github.com/knziiy/LocalStorageTable/releases). 
+
+
+## Build
+
 ```bash
 npm i
 npm run make
-cp -r out/Local\ Storage\ DB-darwin-arm64/Local\ Storage\ DB.app ~/Applications
 ```
 

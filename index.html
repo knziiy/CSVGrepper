@@ -9,6 +9,9 @@
         background-color: white;
         z-index: 10 !important;
       }
+      .highlighted {
+        color:orangered;
+      }
     </style>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/encoding-japanese/1.0.30/encoding.min.js"
@@ -101,7 +104,7 @@
               </thead>
               <tbody>
                 <tr v-for="(row, rowIndex) in filteredRows" :key="rowIndex">
-                  <td v-for="(cell, cellIndex) in row" :key="cellIndex">
+                  <td v-for="(cell, cellIndex) in row" :key="cellIndex" v-html="cell">
                     {{ cell }}
                   </td>
                 </tr>

@@ -29,257 +29,90 @@
   </head>
   <body>
     <div id="app" class="container">
-      <h4 class="pt-2">Local Storage Table</h4>
-      <div class="row">
-        <div class="col">
-          <input
-            type="file"
-            id="csv-file"
-            @change="loadCSV"
-            class="form-control"
-          />
-        </div>
-        <div class="col">
-          <input
-            type="text"
-            v-model="searchText"
-            placeholder="Refined search..."
-            class="form-control"
-          />
-        </div>
-        <div class="col">
-          <button @click="clearLocalStorage" class="btn btn-danger">
-            Clear LocalStorage
-          </button>
-        </div>
-        <!-- Add this dropdown to select datasets -->
-        <div class="col-auto">
-          <div class="dropdown">
-            <button
-              class="btn btn-secondary dropdown-toggle"
-              type="button"
-              id="dataset-dropdown"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Select Dataset
+      <div
+        @dragenter="handleDragEnter"
+        @dragover="handleDragOver"
+        @dragleave="handleDragLeave"
+        @drop="handleDrop"
+        style="height: 1000px"
+      >
+        <h4 class="pt-2">Local Storage Table</h4>
+        <div class="row">
+          <!-- Add this dropdown to select datasets -->
+          <div class="col-auto">
+            <div class="dropdown">
+              <button
+                class="btn btn-secondary dropdown-toggle"
+                type="button"
+                id="dataset-dropdown"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Select Dataset
+              </button>
+              <ul
+                class="dropdown-menu"
+                aria-labelledby="dataset-dropdown"
+                style="z-index: 100"
+              >
+                <li v-for="(dataset, index) in datasets" :key="index">
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    @click="selectDataset(index)"
+                  >
+                    {{ dataset.name }}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col">
+            <input
+              type="text"
+              v-model="searchText"
+              placeholder="Refined search..."
+              class="form-control"
+            />
+          </div>
+          <div class="col"></div>
+          <div class="col">
+            <button @click="clearLocalStorage" class="btn btn-sm btn-dark">
+              Clear LocalStorage
             </button>
-            <ul
-              class="dropdown-menu"
-              aria-labelledby="dataset-dropdown"
-              style="z-index: 100"
-            >
-              <li v-for="(dataset, index) in datasets" :key="index">
-                <a class="dropdown-item" href="#" @click="selectDataset(index)">
-                  {{ dataset.name }}
-                </a>
-              </li>
-            </ul>
           </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <table
-            class="table table-striped table-hover table-sm caption-top mt-3"
-          >
-            <caption>
-              List of data loaded from a CSV file
-            </caption>
-            <thead class="sticky-top">
-              <tr class="table-dark">
-                <th v-for="(header, index) in headers" :key="index">
-                  {{ header }}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(row, rowIndex) in filteredRows" :key="rowIndex">
-                <td v-for="(cell, cellIndex) in row" :key="cellIndex">
-                  {{ cell }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+
+        <div class="row">
+          <div class="col">
+            <table
+              class="table table-striped table-hover table-sm caption-top mt-3"
+            >
+              <caption>
+                List of data loaded from a CSV file. Please Drag & Drop the CSV
+                file onto the screen.
+              </caption>
+              <thead class="sticky-top">
+                <tr class="table-dark">
+                  <th v-for="(header, index) in headers" :key="index">
+                    {{ header }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(row, rowIndex) in filteredRows" :key="rowIndex">
+                  <td v-for="(cell, cellIndex) in row" :key="cellIndex">
+                    {{ cell }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
     <script src="https://unpkg.com/vue@next"></script>
-    <script>
-      const app = Vue.createApp({
-        data() {
-          return {
-            headers: [],
-            rows: [],
-            searchText: "",
-
-            // Add this data property for datasets
-            datasets: [
-              {
-                name: "None",
-                headers: [],
-                rows: [],
-              },
-            ],
-            selectedDatasetIndex: 0, // default selected dataset
-          };
-        },
-        computed: {
-          filteredRows() {
-            if (!this.searchText) {
-              return this.rows;
-            }
-            const searchWords = this.searchText.toLowerCase().split(/\s+/);
-            return this.rows.filter((row) => {
-              return searchWords.every((word) =>
-                row.some((cell) => cell.toLowerCase().includes(word))
-              );
-            });
-          },
-          selectedDataset() {
-            return this.datasets[this.selectedDatasetIndex];
-          },
-        },
-        methods: {
-          async loadCSV(event) {
-            const file = event.target.files[0];
-            if (!file) {
-              return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              const content = e.target.result;
-              this.processCSV(content, file.name);
-            };
-            reader.readAsBinaryString(file);
-          },
-          processCSV(content, datasetName) {
-            const encodingType = Encoding.detect(content);
-            const content_utf = Encoding.convert(content, {
-              from: encodingType,
-              to: "UNICODE",
-              type: "string",
-            });
-
-            const rows = this.parseCSVRows(content_utf);
-
-            this.headers = rows.shift();
-            this.rows = rows;
-
-            // Save the dataset to LocalStorage
-            if (!datasetName) {
-              const inputDatasetName = prompt(
-                "Enter a name for the dataset",
-                "Dataset"
-              );
-              datasetName = inputDatasetName;
-            }
-            if (datasetName) {
-              this.datasets.push({
-                name: datasetName,
-                headers: this.headers,
-                rows: this.rows,
-              });
-              localStorage.setItem("datasets", JSON.stringify(this.datasets));
-            }
-          },
-          parseCSVRows(text) {
-            const lines = text.trim().split(/\r?\n/);
-            const rows = [];
-
-            let currentRow = [];
-            let currentValue = "";
-            let inQuotes = false;
-
-            for (const line of lines) {
-              for (let i = 0; i < line.length; i++) {
-                const currentChar = line[i];
-
-                if (inQuotes) {
-                  if (currentChar === '"') {
-                    if (line[i + 1] === '"') {
-                      currentValue += '"';
-                      i++;
-                    } else {
-                      inQuotes = false;
-                    }
-                  } else {
-                    currentValue += currentChar;
-                  }
-                } else {
-                  if (currentChar === '"') {
-                    inQuotes = true;
-                  } else if (currentChar === ",") {
-                    currentRow.push(currentValue);
-                    currentValue = "";
-                  } else {
-                    currentValue += currentChar;
-                  }
-                }
-              }
-
-              if (inQuotes) {
-                currentValue += "\n";
-              } else {
-                currentRow.push(currentValue);
-                rows.push(currentRow);
-                currentRow = [];
-                currentValue = "";
-              }
-            }
-
-            return rows;
-          },
-          clearLocalStorage() {
-            localStorage.removeItem("datasets");
-            this.datasets = [
-              {
-                name: "Default",
-                headers: [],
-                rows: [],
-              },
-            ];
-            this.selectedDatasetIndex = 0;
-          },
-          async loadInitialData() {
-            // Load data from LocalStorage
-            const datasets = localStorage.getItem("datasets");
-
-            if (datasets) {
-              this.datasets = JSON.parse(datasets);
-              return;
-            }
-
-            // Fetch initial data if not in LocalStorage
-            try {
-              const response = await fetch("initialdb.csv");
-              if (!response.ok) {
-                throw new Error(`HTTP error: ${response.status}`);
-              }
-
-              const content = await response.text();
-              this.processCSV(content, "Sample Data");
-            } catch (error) {
-              console.error("Failed to load initial data:", error);
-            }
-          },
-          // Add this method to select a dataset
-          selectDataset(index) {
-            this.selectedDatasetIndex = index;
-            this.headers = this.selectedDataset.headers;
-            this.rows = this.selectedDataset.rows;
-          },
-        },
-        created() {
-          this.loadInitialData();
-        },
-        // mounted() {
-        //   this.loadInitialData();
-        // },
-      });
-      app.mount("#app");
-    </script>
+    <script src="local-storage-table.js"></script>
 
     <script
       src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"

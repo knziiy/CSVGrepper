@@ -213,6 +213,14 @@ const app = Vue.createApp({
 
       return newCell;
     },
+    toggleOverflow(event) {
+        const target = event.target;
+        if (target.style.whiteSpace === 'nowrap') {
+          target.style.whiteSpace = 'normal';
+        } else {
+          target.style.whiteSpace = 'nowrap';
+        }
+      }
   },
   created() {
     this.loadInitialData();

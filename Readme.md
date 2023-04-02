@@ -17,7 +17,7 @@ Please Drag & Drop the CSV file onto the screen.
 You can specify multiple keywords for searching, separated by spaces.
 
 <div align="center">
-  <img src="static/local-storage-table-image.png">
+  <img src="static/local-storage-table-image.gif">
 </div>
 
 ## Install

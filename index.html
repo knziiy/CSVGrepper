@@ -24,7 +24,10 @@
         overflow-x: auto;
       }
       table th {
-        background-color:#6c757d !important;
+        background-color: #6c757d !important;
+      }
+      .delete-btn {
+        color: #6c757d !important;
       }
     </style>
     <script
@@ -73,13 +76,22 @@
                 style="z-index: 100"
               >
                 <li v-for="(dataset, index) in datasets" :key="index">
-                  <a
-                    class="dropdown-item"
-                    href="#"
-                    @click="selectDataset(index)"
-                  >
-                    {{ dataset.name }}
-                  </a>
+                  <div class="d-flex">
+                    <a
+                      class="dropdown-item flex-grow-1"
+                      href="#"
+                      @click="selectDataset(index)"
+                    >
+                      {{ dataset.name }}
+                    </a>
+                    <button
+                      v-if="index !== 0"
+                      @click="deleteDataset(index)"
+                      class="delete-btn btn btn-light btn-sm"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </li>
               </ul>
             </div>
@@ -91,12 +103,6 @@
               placeholder="Refined search..."
               class="form-control"
             />
-          </div>
-          <div class="col"></div>
-          <div class="col">
-            <button @click="clearLocalStorage" class="btn btn-sm btn-dark">
-              Clear LocalStorage
-            </button>
           </div>
         </div>
 
@@ -112,7 +118,11 @@
                 </caption>
                 <thead class="sticky-top">
                   <tr class="table-dark">
-                    <th v-for="(header, index) in headers" :key="index" @click="toggleOverflow">
+                    <th
+                      v-for="(header, index) in headers"
+                      :key="index"
+                      @click="toggleOverflow"
+                    >
                       {{ header }}
                     </th>
                   </tr>

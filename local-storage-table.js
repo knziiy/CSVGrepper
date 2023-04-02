@@ -214,13 +214,25 @@ const app = Vue.createApp({
       return newCell;
     },
     toggleOverflow(event) {
-        const target = event.target;
-        if (target.style.whiteSpace === 'nowrap') {
-          target.style.whiteSpace = 'normal';
-        } else {
-          target.style.whiteSpace = 'nowrap';
+      const target = event.target;
+      if (target.style.whiteSpace === "nowrap") {
+        target.style.whiteSpace = "normal";
+      } else {
+        target.style.whiteSpace = "nowrap";
+      }
+    },
+    deleteDataset(index) {
+      if (confirm("Are you sure you want to delete this dataset?")) {
+        this.datasets.splice(index, 1);
+        localStorage.setItem("datasets", JSON.stringify(this.datasets));
+
+        if (this.selectedDatasetIndex === index) {
+          this.selectedDatasetIndex = 0;
+          this.headers = this.selectedDataset.headers;
+          this.rows = this.selectedDataset.rows;
         }
       }
+    },
   },
   created() {
     this.loadInitialData();

@@ -171,21 +171,17 @@ const app = Vue.createApp({
       this.rows = this.selectedDataset.rows;
     },
     handleDragEnter(event) {
-      console.log("Drag Enter");
       event.preventDefault();
       event.dataTransfer.dropEffect = "copy";
     },
     handleDragOver(event) {
-      console.log("Drag Over");
       event.preventDefault();
       event.dataTransfer.dropEffect = "copy";
     },
     handleDragLeave(event) {
-      console.log("Drag Leave");
       event.preventDefault();
     },
     handleDrop(event) {
-      console.log("Dropped File");
       event.preventDefault();
       const file = event.dataTransfer.files[0];
       if (!file) {

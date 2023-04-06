@@ -1,6 +1,6 @@
 {
-  "name": "Local Storage Table",
-  "version": "1.3.2",
+  "name": "CSVGrepper",
+  "version": "1.4.0",
   "description": "",
   "main": "main.js",
   "scripts": {

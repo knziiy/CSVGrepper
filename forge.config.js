@@ -1,6 +1,6 @@
 module.exports = {
   packagerConfig: {
-    icon: 'local-storage-table-icon'
+    icon: 'csv-grepper-icon'
   },
   rebuildConfig: {},
   makers: [

@@ -1,10 +1,10 @@
-# Local Storage Table
+# CSV Grepper
 
 <div align="left">
   <img src="static/icon.iconset/icon_128x128.png">
 </div>
 
-Local Storage Table is an Electron-based application that allows you to store CSV data in the local machine's Local Storage and search it easily.
+CSV Grepper is an Electron-based application that allows you to store CSV data in the local machine's Local Storage and search it easily.
 
 ##  Features
 It converts CSV data into a table and stores it in Local Storage, without sending it externally.
@@ -17,12 +17,12 @@ Please Drag & Drop the CSV file onto the screen.
 You can specify multiple keywords for searching, separated by spaces.
 
 <div align="center">
-  <img src="static/local-storage-table-image.gif">
+  <img src="static/csv-grepper-image.gif">
 </div>
 
 ## Install
 
-You can obtain the pre-built .app file from the [Release page](https://github.com/knziiy/LocalStorageTable/releases). 
+You can obtain the pre-built .app file from the [Release page](https://github.com/knziiy/CSVGrepper/releases). 
 
 
 ## Build

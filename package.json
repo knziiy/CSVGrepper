@@ -1,6 +1,6 @@
 {
-  "name": "CSVGrepper",
-  "version": "1.4.0",
+  "name": "CSV Grepper",
+  "version": "1.4.1",
   "description": "",
   "main": "main.js",
   "scripts": {

@@ -83,7 +83,7 @@ const app = Vue.createApp({
           rows: this.rows,
         });
         localStorage.setItem("datasets", JSON.stringify(this.datasets));
-        this.selectDataset(1);
+        this.selectDataset(this.datasets.length - 1);
       }
     },
     parseCSVRows(text) {

@@ -4,7 +4,7 @@ const app = Vue.createApp({
       headers: [],
       rows: [],
       searchText: "",
-
+      isContainerFluid: false,
       // Add this data property for datasets
       datasets: [
         {
@@ -228,6 +228,9 @@ const app = Vue.createApp({
           this.rows = this.selectedDataset.rows;
         }
       }
+    },
+    toggleContainerFluid() {
+      this.isContainerFluid = !this.isContainerFluid;
     },
   },
   created() {

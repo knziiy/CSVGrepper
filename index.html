@@ -48,99 +48,118 @@
     />
   </head>
   <body>
-    <div id="app" class="container">
-      <div
-        @dragenter="handleDragEnter"
-        @dragover="handleDragOver"
-        @dragleave="handleDragLeave"
-        @drop="handleDrop"
-        style="height: 1000px"
-      >
-        <h4 class="pt-2">CSV Grepper</h4>
-        <div class="row">
-          <!-- Add this dropdown to select datasets -->
-          <div class="col-auto">
-            <div class="dropdown">
-              <button
-                class="btn btn-secondary dropdown-toggle"
-                type="button"
-                id="dataset-dropdown"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
+    <div id="app">
+      <div :class='isContainerFluid ? "container-fluid" : "container"'>
+        <div
+          @dragenter="handleDragEnter"
+          @dragover="handleDragOver"
+          @dragleave="handleDragLeave"
+          @drop="handleDrop"
+          style="height: 1000px"
+        >
+          <div class="d-flex">
+            <h4 class="pt-2">CSV Grepper</h4>
+            <div class="form-check form-switch ms-3 mt-3">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="toggleContainer"
+                @change="toggleContainerFluid"
+              />
+              <label class="form-check-label" for="toggleContainer"
+                >Fluid Table</label
               >
-                Select Dataset
-              </button>
-              <ul
-                class="dropdown-menu"
-                aria-labelledby="dataset-dropdown"
-                style="z-index: 100"
-              >
-                <li v-for="(dataset, index) in datasets" :key="index">
-                  <div class="d-flex">
-                    <a
-                      class="dropdown-item flex-grow-1"
-                      href="#"
-                      @click="selectDataset(index)"
-                    >
-                      {{ dataset.name }}
-                    </a>
-                    <button
-                      v-if="index !== 0"
-                      @click="deleteDataset(index)"
-                      class="delete-btn btn btn-light btn-sm"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </li>
-              </ul>
             </div>
           </div>
-          <div class="col">
-            <input
-              type="text"
-              v-model="searchText"
-              placeholder="Refined search..."
-              class="form-control"
-            />
-          </div>
-        </div>
 
-        <div class="row">
-          <div class="col">
-            <div>
-              <table
-                class="table table-striped table-bordered table-hover table-sm caption-top mt-3"
-              >
-                <caption>
-                  List of data loaded from a CSV file. Please Drag & Drop the
-                  CSV file onto the screen.<br>
-                  <span class="text-success">All data is stored locally and will not be sent externally.</span>
-                </caption>
-                <thead class="sticky-top">
-                  <tr class="table-dark">
-                    <th
-                      v-for="(header, index) in headers"
-                      :key="index"
-                      @click="toggleOverflow"
+          <div class="row">
+            <!-- Add this dropdown to select datasets -->
+            <div class="col-auto">
+              <div class="dropdown">
+                <button
+                  class="btn btn-secondary dropdown-toggle"
+                  type="button"
+                  id="dataset-dropdown"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Select Dataset
+                </button>
+                <ul
+                  class="dropdown-menu"
+                  aria-labelledby="dataset-dropdown"
+                  style="z-index: 100"
+                >
+                  <li v-for="(dataset, index) in datasets" :key="index">
+                    <div class="d-flex">
+                      <a
+                        class="dropdown-item flex-grow-1"
+                        href="#"
+                        @click="selectDataset(index)"
+                      >
+                        {{ dataset.name }}
+                      </a>
+                      <button
+                        v-if="index !== 0"
+                        @click="deleteDataset(index)"
+                        class="delete-btn btn btn-light btn-sm"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="col">
+              <input
+                type="text"
+                v-model="searchText"
+                placeholder="Refined search..."
+                class="form-control"
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <div>
+                <table
+                  class="table table-striped table-bordered table-hover table-sm caption-top mt-3"
+                >
+                  <caption>
+                    List of data loaded from a CSV file. Please Drag & Drop the
+                    CSV file onto the screen.<br />
+                    <span class="text-success"
+                      >All data is stored locally and will not be sent
+                      externally.</span
                     >
-                      {{ header }}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(row, rowIndex) in filteredRows" :key="rowIndex">
-                    <td
-                      v-for="(cell, cellIndex) in row"
-                      :key="cellIndex"
-                      v-html="cell"
-                      @click="toggleOverflow"
-                    >
-                      {{ cell }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                  </caption>
+                  <thead class="sticky-top">
+                    <tr class="table-dark">
+                      <th
+                        v-for="(header, index) in headers"
+                        :key="index"
+                        @click="toggleOverflow"
+                      >
+                        {{ header }}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(row, rowIndex) in filteredRows" :key="rowIndex">
+                      <td
+                        v-for="(cell, cellIndex) in row"
+                        :key="cellIndex"
+                        v-html="cell"
+                        @click="toggleOverflow"
+                      >
+                        {{ cell }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>

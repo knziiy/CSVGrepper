@@ -144,28 +144,6 @@ const app = Vue.createApp({
       ];
       this.selectedDatasetIndex = 0;
     },
-    async loadInitialData() {
-      // Load data from LocalStorage
-      const datasets = localStorage.getItem("datasets");
-
-      if (datasets) {
-        this.datasets = JSON.parse(datasets);
-        return;
-      }
-
-      // Fetch initial data if not in LocalStorage
-      try {
-        const response = await fetch("initialdb.csv");
-        if (!response.ok) {
-          throw new Error(`HTTP error: ${response.status}`);
-        }
-
-        const content = await response.text();
-        this.processCSV(content, "Sample Data");
-      } catch (error) {
-        console.error("Failed to load initial data:", error);
-      }
-    },
     selectDataset(index) {
       this.selectedDatasetIndex = index;
       this.headers = this.selectedDataset.headers;
@@ -233,9 +211,6 @@ const app = Vue.createApp({
     toggleContainerFluid() {
       this.isContainerFluid = !this.isContainerFluid;
     },
-  },
-  created() {
-    this.loadInitialData();
   },
 });
 app.mount("#app");

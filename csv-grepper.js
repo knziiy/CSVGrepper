@@ -144,6 +144,15 @@ const app = Vue.createApp({
       ];
       this.selectedDatasetIndex = 0;
     },
+    async loadDataset() {
+      // Load data from LocalStorage
+      const datasets = localStorage.getItem("datasets");
+
+      if (datasets) {
+        this.datasets = JSON.parse(datasets);
+        return;
+      }
+    },
     selectDataset(index) {
       this.selectedDatasetIndex = index;
       this.headers = this.selectedDataset.headers;
@@ -211,6 +220,9 @@ const app = Vue.createApp({
     toggleContainerFluid() {
       this.isContainerFluid = !this.isContainerFluid;
     },
+  },
+  created() {
+    this.loadDataset();
   },
 });
 app.mount("#app");

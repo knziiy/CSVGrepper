@@ -220,9 +220,30 @@ const app = Vue.createApp({
     toggleContainerFluid() {
       this.isContainerFluid = !this.isContainerFluid;
     },
+    resizeStickyTop() {
+      const table = document.querySelector("table");
+      const stickyTop = document.querySelector(".sticky-top");
+  
+      if (table) {
+        const tableWidth = table.clientWidth;
+        stickyTop.style.width = `${tableWidth}px`;
+      }
+    },
   },
   created() {
     this.loadDataset();
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.resizeStickyTop();
+    });
+  },
+  watch: {
+    filteredRows() {
+      this.$nextTick(() => {
+        this.resizeStickyTop();
+      });
+    },
   },
 });
 app.mount("#app");

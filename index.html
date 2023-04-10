@@ -15,7 +15,21 @@
         top: 130px;
         background-color: white;
       }
-
+      .sticky-top-thead:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-top: 1px solid white;
+        border-bottom: 1px solid white;
+        background: white;
+        z-index: -1;
+      }
+      .search-input {
+        width: 500px !important;
+      }
       .highlighted {
         color: orangered;
       }
@@ -41,7 +55,7 @@
         border-radius: 20px;
         text-align: center;
         height: 300px;
-        width: 100%;;
+        width: 100%;
         padding: 100px;
       }
     </style>
@@ -130,13 +144,13 @@
                   type="text"
                   v-model="searchText"
                   placeholder="Refined search..."
-                  class="form-control"
+                  class="form-control search-input"
                 />
               </div>
             </div>
             <caption>
-              List of data loaded from a CSV file. Please Drag & Drop the
-              CSV file onto the screen.<br />
+              List of data loaded from a CSV file. Please Drag & Drop the CSV
+              file onto the screen.<br />
               <span class="text-success"
                 >All data is stored locally and will not be sent
                 externally.</span
@@ -147,7 +161,10 @@
           <div class="row">
             <div class="col">
               <div>
-                <div v-if='selectedDataset.name === "None"' class="drop-area mt-4">
+                <div
+                  v-if='selectedDataset.name === "None"'
+                  class="drop-area mt-4"
+                >
                   <span class="text-secondary">Drop CSV file here.</span>
                 </div>
                 <table
